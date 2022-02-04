@@ -31,10 +31,12 @@ class Solution {
         for(var num : nums) {
             n ^= num;
         }
+        // n为0000...1000....
         n &= -n;
         int[] res = new int[2];
         for(var num : nums) {
             if((num & n) != 0) {
+                // 其余出现2次的数都消掉了,会进入同一个if分支,而那两个只出现过1次的因此进入不同的分支,所以得到的结果不同
                 res[0] ^= num;
             } else {
                 res[1] ^= num;
