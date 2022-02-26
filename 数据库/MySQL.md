@@ -222,14 +222,41 @@ ACID是指事务的4个特性。
 
 处理方式：mysql所有事务隔离级别在数据库层面上均可避免。![image-20220225210757446](https://gitee.com/cao_ziqiang/img/raw/master/20220225210757.png)
 
-脏读：READ-COMMITED事务隔离级别以上可避免，指一个事务读取到了其他未提交的事务，也就是脏数据。
+脏读：`READ-COMMITED`事务隔离级别以上可避免，指一个事务读取到了其他未提交的事务，也就是脏数据。
 
-处理方式：需要把事务隔离级别设置为READ-COMMITED，**只能读其他事务已经提交了的事务**。
+处理方式：需要把事务隔离级别设置为`READ-COMMITED`，**只能读其他事务已经提交了的事务**。
 
-不可重复读：REPEATABLE-READ事务隔离级别以上可以避免，
+不可重复读：`REPEATABLE-READ`事务隔离级别以上可以避免，指一个事务在还未对数据进行更新的情况下，其他事务提交后的数据，每次执行读操作的事务读取的数据不一致。
 
+处理方式：需要把事务的隔离级别设置为`REPEATTABLE-READ`可重复读，多次读取会读取到最终的数据。
 
+幻读：`SERIALIZABLE`事务隔离级别可避免，指的是事务A读取若干行，事务B以插入或删除的方式来修改事务A的结果集，导致事务A看起来像出现幻觉一样。
+
+![image-20220226145923989](https://gitee.com/cao_ziqiang/img/raw/master/20220226145924.png)
 
 ### InnoDB可重复读隔离级别下如何避免幻读？
 
+当前读：`select ... lock in share mode`，`select ... for update`，`update`，`insert`，`delete`都是加了锁的SQL语句，当执行执行后，读取的是最新数据，而且保证其他并发事务不能修改当前事务。第一条加的是共享锁，其他的语句加的是排他锁。
+
+快照读:不加速的非阻塞读，`select`。
+
+表象：快照读（非阻塞读）--伪MVCC
+
+内在：next-key锁（行锁+gap锁）
+
+对主键索引或者唯一索引的where条件如果全部命中,那么不会使用gap锁,只会加记录数;
+
+如果where部分或者全都不命中,那么就会加gap锁;
+
+gap锁会用在非唯一索引或者不走索引的当前读中。
+
 ### RC、RR级别下的InnoDB的非阻塞读如何实现？
+
+ 数据行里的DB_TRX_ID(标记事务的ID)、DB_ROLL_PTR(回滚指针)、DB_ROW_ID(行号)字段很关键；
+
+undo日志，存储老版日志；
+
+![image-20220226152634475](https://gitee.com/cao_ziqiang/img/raw/master/20220226152634.png)
+
+read view；
+
