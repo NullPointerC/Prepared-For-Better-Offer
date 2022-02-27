@@ -206,7 +206,9 @@ INNODB适合数据增删改查都是否频繁的场景，适合可靠性要求�
 
 InnoDB引擎如下所示：包含关系从大到小依次是表空间->段->区->页->行![image-20220227145534969](https://gitee.com/cao_ziqiang/img/raw/master/20220227145535.png)
 
+在InnoDB中，一般表都只存放在一个文件`xxx.ibd`中，其中包括了表结构、索引和数据，可以使用`bin`目录下的`ibd2sdi`工具查看表结构；
 
+在MyISAM中，表包括了`xxx.sdi`，`xxx.myd`和`xxx.myi`三个文件组成。`xxx.sdi`存储表结构信息，`xxx.myd`存储数据，`xxx.myi`存储索引。
 
 ### 数据库事务的四大特性？
 
