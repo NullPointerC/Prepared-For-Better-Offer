@@ -75,5 +75,39 @@ SortSet：String元素组成的有序集合，通过分数来为集合中的成�
 
 ![image-20220303200820874](https://gitee.com/cao_ziqiang/img/raw/master/20220303200820.png)
 
+### 从海量key中查询出某一固定前缀的key
 
+一定要根据数据范围来回答。
+
+`keys pattern`：查找所有符合给定模式`pattern`的`key`，但是`keys`指令一次性返回所有匹配的key，key数量过大会使服务卡顿。
+
+可以使用`SCAN cursor [MATHCH pattern] [COUNT count]`指令进行匹配，这条指令是基于游标的迭代器，需要基于上一次的游标延续之前的迭代过程；
+
+以0作为游标开始一次新的迭代，直到命令返回游标0完成一次遍历；
+
+不保证每次执行都返回某个给定数量的元素，支持模糊查询；
+
+一次返回的数量不可控，只能是大概率符合count参数；
+
+### 分布式锁
+
+`setnx`指令和`EXPIRE key`指令设置key的生存时间，当key过期时，会被自动删除；
+
+![image-20220303211831762](https://gitee.com/cao_ziqiang/img/raw/master/20220303211831.png)
+
+但是原子性得不到保证；
+
+从redis2开始，就可以使用`set`操作将·`setnx`和`expire`相结合：
+
+`set key value [ex seconds] [px milliseconds] [nx|xx]`
+
+`ex seconds` 表示设置建的过期时间为seconds，后者为毫秒；
+
+NX表示不存在创建，XX表示已经存在时创建；![image-20220303212725941](https://gitee.com/cao_ziqiang/img/raw/master/20220303212726.png)
+
+### 大量key同时过期
+
+redis中大量的key集中过期由于清除大量的key很耗时，会造成系统短暂性卡顿；
+
+解决方案：在设置key的过期时间的时候，给每个key加上随机值；
 
