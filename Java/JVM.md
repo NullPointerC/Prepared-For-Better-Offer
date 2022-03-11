@@ -202,7 +202,11 @@ public class FinalizeEscapeGC {
 
 ### 有哪几种垃圾回收器，有哪些优缺点? cms和g1的区别?
 
-![image-20220310173016696](https://gitee.com/cao_ziqiang/img/raw/master/20220310173016.png)
+![image.png](https://gitee.com/cao_ziqiang/img/raw/master/20220310174739.webp)
+
+<hr/>
+
+![image-20220310180229464](https://gitee.com/cao_ziqiang/img/raw/master/20220310180229.png)
 
 #### Serial收集器（GC日志标识：DefNew）
 
@@ -214,7 +218,7 @@ Serial收集器简单而高效、没有线程交互的开销，专心做垃圾�
 
 #### ParNew收集器（GC日志标识：ParNew）
 
-ParNew收集器其实就是Serial收集器的多线程版本，追求低停顿的时间。除了使用多条线程进行垃圾收集之外，其余行为包括Serial收集器可用的所有控制参数、收集算法、Stop The World、对象分配规则、回收策略等都与Serial收集器完全一样，在实现上，这两种收集器也共用了相当多的代码。同时ParNew收集器也是CMS在年轻代的默认收集器，ParNew收集器的工作过程如图所示：
+ParNew收集器其实就是Serial收集器的多线程版本，**追求低停顿的时间**。除了使用多条线程进行垃圾收集之外，其余行为包括Serial收集器可用的所有控制参数、收集算法、Stop The World、对象分配规则、回收策略等都与Serial收集器完全一样，在实现上，这两种收集器也共用了相当多的代码。同时ParNew收集器也是CMS在年轻代的默认收集器，ParNew收集器的工作过程如图所示：
 
 ![image.png](https://gitee.com/cao_ziqiang/img/raw/master/20220310173347.webp)
 
@@ -226,7 +230,7 @@ ParNew收集器在单CPU的环境中绝对不会有比Serial收集器更好的�
 
 #### Parallel Scavenge收集器（GC日志标识：PSYoungGen）
 
-Parallel Scavenge收集器是一个新生代收集器，它也是使用复制算法的收集器，又是并行的多线程收集器。它的特点是它的关注点与其他收集器不同，CMS等收集器的关注点是尽可能地缩短垃圾收集时用户线程的停顿时间，而Parallel Scavenge收集器的目标则是达到一个可控制的**吞吐量**（Throughput）。吞吐量=运行用户代码时间/（运行用户代码时间+垃圾收集时间），虚拟机总共运行了100分钟，其中垃圾收集花掉1分钟，那吞吐量就是99%。
+Parallel Scavenge收集器是一个新生代收集器，它也是使用复制算法的收集器，又是并行的多线程收集器。它的特点是它的关注点与其他收集器不同，CMS等收集器的关注点是尽可能地缩短垃圾收集时用户线程的停顿时间，而Parallel Scavenge收集器的目标则是达到一个可控制的**吞吐量**（Throughput）。**吞吐量=运行用户代码时间/（运行用户代码时间+垃圾收集时间）**，虚拟机总共运行了100分钟，其中垃圾收集花掉1分钟，那吞吐量就是99%。
 
 停顿时间越短就越适合需要与用户交互的程序，良好的响应速度能提升用户体验，而高吞吐量则可以高效率地利用CPU时间，尽快完成程序的运算任务，**主要适合在后台运算而不需要太多交互的任务**。
 
@@ -253,7 +257,7 @@ Parallel Old是Parallel Scavenge收集器的老年代版本，使用多线程和
 
 #### CMS（Concurrent Mark Sweep）收集器
 
-CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收停顿时间为目标的收集器。目前很大一部分的Java应用集中在互联网站或者B/S系统的服务端上，这类应用尤其重视服务的响应速度，希望系统停顿时间最短，以给用户带来较好的体验。CMS收集器就非常符合这类应用的需求。
+CMS（Concurrent Mark Sweep）收集器是一种以**获取最短回收停顿时间为目标**的收集器。目前很大一部分的Java应用集中在互联网站或者B/S系统的服务端上，这类应用尤其重视服务的响应速度，希望系统停顿时间最短，以给用户带来较好的体验。CMS收集器就非常符合这类应用的需求。
 
 6.1 CMS 原理
 
@@ -261,8 +265,8 @@ CMS（Concurrent Mark Sweep）收集器是一种以获取最短回收停顿时�
 
 初始标记（CMS-initial-mark）、并发标记（CMS-concurrent-mark）、预处理（CMS-concurrent-preclean）、重新标记（CMS-Final-Remark）、并发清除（CMS-concurrent-sweep）、重置（CMS-concurrent-reset）。
 
-1. **初始标记：** 仅仅只是标记一下GC Roots能直接关联到的对象，速度很快，该阶段会Stop The World。
-2. **并发标记：** 进行GC RootsTracing 的过程。因为该阶段是并发执行的，在运行期间可能发生新生代的对象晋升到老年代、或者是直接在老年代分配对象、或者更新老年代对象的引用关系等，对于这些对象，都是需要进行重新标记的，否则有些对象就会被遗漏，发生漏标的情况。为了提高重新标记的效率，该阶段会把上述对象所在的Card标识为Dirty，后续只需扫描这些Dirty Card的对象，避免扫描整个老年代。
+1. **初始标记：** 仅仅只是标记一下GC Roots能**直接**关联到的对象，速度很快，该阶段会Stop The World。
+2. **并发标记：** 进行GC RootsTracing 的过程，找出**存活**对象。因为该阶段是并发执行的，在运行期间可能发生新生代的对象晋升到老年代、或者是直接在老年代分配对象、或者更新老年代对象的引用关系等，对于这些对象，都是需要进行重新标记的，否则有些对象就会被遗漏，发生漏标的情况。为了提高重新标记的效率，该阶段会把上述对象所在的Card标识为Dirty，后续只需扫描这些Dirty Card的对象，避免扫描整个老年代。
 3. **预处理**
 	1. 在并发标记阶段，如果老年代中有对象内部引用发生变化，会把所在的Card标记为Dirty（这里使用一个类似CardTable的数据结构，叫ModUnionTable），通过扫描这些Table，重新标记那些在并发标记阶段引用被更新的对象（晋升到老年代的对象、原本就在老年代的对象）。
 	2. 处理新生代已经发现的引用，比如在并发阶段，在Eden区中分配了一个A对象，A对象引用了一个老年代对象B（这个B之前没有被标记），在这个阶段就会标记对象B为活跃对象。可中断的预处理：该阶段发生的前提是新生代Eden区的内存使用量大于参数CMSScheduleRemarkEdenSizeThreshold（默认是2M） ，如果新生代的对象太少，就没有必要执行该阶段，直接执行重新标记阶段。该阶段主要做两件事：
@@ -298,3 +302,54 @@ CMS是一款优秀的收集器，它的主要优点在名字上已经体现出�
 - **Serial Old** 是 Servial 的老年代版本，老年代、单线程、标记-整理，有GC STW，主要是给client使用，如果是Server模式，则可以和Parallel Scavenge 搭配使用或者作为CMS收集器的后备预案，在并发收集发生Concurrent Mode Failure时使用
 - **Parallel Old** 是 多线程、标记——整理算法、适合于吞吐量优先以及CPU资源敏感的场合可以和Parallel Scavenge搭配使用
 - **CMS** 是有最短停顿时间 低延迟的垃圾收集器，使用分代收集新生代采用复制算法、老年代采用标记-清除算法进行回收
+
+#### G1垃圾收集器
+
+G1(Garbage-First)收集器是当今收集器技术发展的最前沿成果之一。G1是一款面向服务端应用的垃圾收集器。HotSpot开发团队赋予它的使命是（在比较长期的）未来可以替换掉JDK 1.5中发布的CMS收集器。与其他GC收集器相比，G1具备如下特点。
+
+**并行与并发**：G1能充分利用多CPU、多核环境下的硬件优势，使用多个CPU（CPU或者CPU核心）来缩短Stop-The-World停顿的时间，部分其他收集器原本需要停顿Java线程执行的GC动作，G1收集器仍然可以通过并发的方式让Java程序继续执行。
+
+**分代收集**：与其他收集器一样，分代概念在G1中依然得以保留。虽然G1可以不需要其他收集器配合就能独立管理整个GC堆，但它能够采用不同的方式去处理新创建的对象和已经存活了一段时间、熬过多次GC的旧对象以获取更好的收集效果。
+
+**空间整合**：与CMS的“标记—清理”算法不同，G1从整体来看是基于“标记—整理”算法实现的收集器，从局部（两个Region之间）上来看是基于“复制”算法实现的，但无论如何，这两种算法都意味着G1运作期间不会产生内存空间碎片，收集后能提供规整的可用内存。这种特性有利于程序长时间运行，分配大对象时不会因为无法找到连续内存空间而提前触发下一次GC。
+
+**可预测的停顿**：这是G1相对于CMS的另一大优势，降低停顿时间是G1和CMS共同的关注点，但G1除了追求低停顿外，还能建立可预测的停顿时间模型，能让使用者明确指定在一个长度为M毫秒的时间片段内，消耗在垃圾收集上的时间不得超过N毫秒，这几乎已经是实时Java（RTSJ）的垃圾收集器的特征了。
+
+在G1之前的其他收集器进行收集的范围都是整个新生代或者老年代，而G1不再是这样。使用G1收集器时，Java堆的内存布局就与其他收集器有很大差别，它将整个Java堆划分为多个大小相等的独立区域（Region），虽然还保留有新生代和老年代的概念，但新生代和老年代不再是物理隔离的了，它们都是一部分Region（不需要连续）的集合。
+
+![image.png](https://gitee.com/cao_ziqiang/img/raw/master/20220311223320.webp)
+
+在G1中，还有一种特殊的区域，叫Humongous区域。 如果一个对象占用的空间超过了分区容量50%以上，G1收集器就认为这是一个巨型对象。这些巨型对象，默认直接会被分配在年老代，但是如果它是一个短期存在的巨型对象，就会对垃圾收集器造成负面影响。为了解决这个问题，G1划分了一个Humongous区，它用来专门存放巨型对象。如果一个H区装不下一个巨型对象，那么G1会寻找连续的H分区来存储。为了能找到连续的H区，有时候不得不启动Full GC。
+
+G1收集器之所以能建立可预测的停顿时间模型，是因为它可以有计划地避免在整个Java堆中进行全区域的垃圾收集。G1跟踪各个Region里面的垃圾堆积的价值大小（回收所获得的空间大小以及回收所需时间的经验值），在后台维护一个优先列表，每次根据允许的收集时间，优先回收价值最大的Region（这也就是Garbage-First名称的来由）。这种使用Region划分内存空间以及有优先级的区域回收方式，保证了G1收集器在有限的时间内可以获取尽可能高的收集效率。
+
+一个对象分配在某个Region中，它并非只能被本Region中的其他对象引用，而是可以与整个Java堆任意的对象发生引用关系。那在做可达性判定确定对象是否存活的时候，岂不是还得扫描整个Java堆才能保证准确性？这个问题其实并非在G1中才有，只是在G1中更加突出而已。在以前的分代收集中，新生代的规模一般都比老年代要小许多，新生代的收集也比老年代要频繁许多，那回收新生代中的对象时也面临相同的问题，如果回收新生代时也不得不同时扫描老年代的话，那么Minor GC的效率可能下降不少。
+
+在其他垃圾收集器中，通过CardTable来维护老年代对年轻代的引用，CardTable可以说是Remembered Set（RS）的一种特殊实现，是Card的集合。Card是一块2的幂字节大小的内存区域，例如HotSpot用512字节，里面可能包含多个对象。CardTable要记录的是从它覆盖的范围出发指向别的范围的指针。以分代式GC的CardTable为例，要记录老年代指向年轻代的跨代指针，被标记的Card是老年代范围内的。当进进行年轻代的垃圾收集时，只需要扫描年轻代和老年代的CardTable即可保证不对全堆扫描也不会有遗漏。CardTable通常为字节数组，由Card的索引（即数组下标）来标识每个分区的空间地址。默认情况下，每个卡都未被引用。当一个地址空间被引用时，这个地址空间对应的数组索引的值被标记为”0″，即标记为dirty card。
+
+在G1收集器中，也有和上面一样的CardTable。另外G1中每个Region还有一个与之对应的Remembered Set，虚拟机发现程序在对Reference类型的数据进行写操作时，会产生一个 Write Barrier暂时中断写操作，检查Reference引用的对象是否处于不同的Region之中，如果是，便通过CardTable把相关引用信息记录到被引用对象所属的Region的Remembered Set之中。当进行内存回收时，在GC根节点的枚举范围中加入Remembered Set即可保证不对全堆扫描也不会有遗漏。
+
+![image.png](https://gitee.com/cao_ziqiang/img/raw/master/20220311223345.webp)
+
+Young GC大致可以分为5个阶段：
+
+1. 根扫描：静态和本地对象被扫描。
+2. 更新RS：处理dirty card队列更新RS。
+3. 处理RS：检测从年轻代指向年老代的对象。
+4. 对象拷贝：拷贝存活的对象到survivor/old区域。
+5. 处理引用队列：软引用，弱引用，虚引用处理。
+
+Mixed GC大致可划分为全局并发标记（global concurrent marking）和拷贝存活对象（evacuation）两个大部分： global concurrent marking是基于SATB形式的并发标记，包括以下4个阶段：初始标记（Initial Marking）、并发标记（Concurrent Marking）、最终标记（Final Marking）、清理（Clean Up）。
+
+- 初始标记（initial marking）：暂停阶段。扫描根集合，标记所有从根集合可直接到达的对象并将它们的字段压入扫描栈（marking stack）中等到后续扫描。G1使用外部的bitmap来记录mark信息，而不使用对象头的mark word里的mark bit。在分代式G1模式中，初始标记阶段借用young GC的暂停，因而没有额外的、单独的暂停阶段。
+- 并发标记（concurrent marking）：并发阶段。不断从扫描栈取出引用递归扫描整个堆里的对象图。每扫描到一个对象就会对其标记，并将其字段压入扫描栈。重复扫描过程直到扫描栈清空。过程中还会扫描SATB write barrier所记录下的引用。
+- 最终标记（final marking，在实现中也叫remarking）：暂停阶段。在完成并发标记后，每个Java线程还会有一些剩下的SATB write barrier记录的引用尚未处理。这个阶段就负责把剩下的引用处理完。同时这个阶段也进行弱引用处理（reference processing）。 注意这个暂停与CMS的remark有一个本质上的区别，那就是这个暂停只需要扫描SATB buffer，而CMS的remark需要重新扫描mod-union table里的dirty card外加整个根集合，而此时整个young gen（不管对象死活）都会被当作根集合的一部分，因而CMS remark有可能会非常慢。
+- 清理（cleanup）：暂停阶段。清点和重置标记状态。这个阶段有点像mark-sweep中的sweep阶段，不过不是在堆上sweep实际对象，而是在marking bitmap里统计每个region被标记为活的对象有多少。这个阶段如果发现完全没有活对象的region就会将其整体回收到可分配region列表中。
+
+Evacuation阶段是全暂停的。它负责把一部分region里的活对象拷贝到空region里去，然后回收原本的region的空间。
+
+Evacuation阶段可以自由选择任意多个region来独立收集构成收集集合（collection set，简称CSet），靠per-region remembered set（简称RSet）实现。这是regional garbage collector的特征。
+
+在选定CSet后，evacuation其实就跟ParallelScavenge的young GC的算法类似，采用并行copying（或者叫scavenging）算法把CSet里每个region里的活对象拷贝到新的region里，整个过程完全暂停。从这个意义上说，G1的evacuation跟传统的mark-compact算法的compaction完全不同：前者会自己从根集合遍历对象图来判定对象的生死，不需要依赖global concurrent marking的结果，有就用，没有拉倒；而后者则依赖于之前的mark阶段对对象生死的判定。
+
+纯G1模式下，CSet的选定完全靠统计模型找处收益最高、开销不超过用户指定的上限的若干region。由于每个region都有RSet覆盖，要单独evacuate任意一个或多个region都没问题。
