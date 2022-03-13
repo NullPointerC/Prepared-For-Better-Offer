@@ -208,7 +208,7 @@ public class FinalizeEscapeGC {
 
 ![image-20220310180229464](https://gitee.com/cao_ziqiang/img/raw/master/20220310180229.png)
 
-#### Serial收集器（GC日志标识：DefNew）
+#### Serial收集器（GC日志标识：DefNew，使用命令：-XX:+UseSerialGC）
 
 Serial收集器是最基本、发展历史最悠久的收集器，曾经（在JDK 1.3.1之前）是虚拟机新生代收集的唯一选择。这个收集器是一个单线程的收集器，但它的“单线程”的意义并不仅仅说明它只会使用一个CPU或一条收集线程去完成垃圾收集工作，更重要的是在它进行垃圾收集时，必须暂停其他所有的工作线程，直到它收集结束。
 
@@ -216,7 +216,7 @@ Serial收集器简单而高效、没有线程交互的开销，专心做垃圾�
 
 ![image.png](https://gitee.com/cao_ziqiang/img/raw/master/20220310173218.webp)
 
-#### ParNew收集器（GC日志标识：ParNew）
+#### ParNew收集器（GC日志标识：ParNew，使用命令：-XX:+UseParNewGC）
 
 ParNew收集器其实就是Serial收集器的多线程版本，**追求低停顿的时间**。除了使用多条线程进行垃圾收集之外，其余行为包括Serial收集器可用的所有控制参数、收集算法、Stop The World、对象分配规则、回收策略等都与Serial收集器完全一样，在实现上，这两种收集器也共用了相当多的代码。同时ParNew收集器也是CMS在年轻代的默认收集器，ParNew收集器的工作过程如图所示：
 
@@ -228,7 +228,7 @@ ParNew收集器除了多线程收集之外，其他与Serial收集器相比并�
 
 ParNew收集器在单CPU的环境中绝对不会有比Serial收集器更好的效果，甚至由于存在线程交互的开销，该收集器在通过超线程技术实现的两个CPU的环境中都不能百分之百地保证可以超越Serial收集器。当然，随着可以使用的CPU的数量的增加，它对于GC时系统资源的有效利用还是很有好处的。它默认开启的收集线程数与CPU的数量相同，在CPU非常多(譬如32个，现在CPU动辄就4核加超线程，服务器超过32个逻辑CPU的情况越来越多了)的环境下，可以使用-XX：ParallelGCThreads参数来限制垃圾收集的线程数。
 
-#### Parallel Scavenge收集器（GC日志标识：PSYoungGen）
+#### Parallel Scavenge收集器（GC日志标识：PSYoungGen，使用命令：-XX:+UseParallelGC）
 
 Parallel Scavenge收集器是一个新生代收集器，它也是使用复制算法的收集器，又是并行的多线程收集器。它的特点是它的关注点与其他收集器不同，CMS等收集器的关注点是尽可能地缩短垃圾收集时用户线程的停顿时间，而Parallel Scavenge收集器的目标则是达到一个可控制的**吞吐量**（Throughput）。**吞吐量=运行用户代码时间/（运行用户代码时间+垃圾收集时间）**，虚拟机总共运行了100分钟，其中垃圾收集花掉1分钟，那吞吐量就是99%。
 
@@ -238,7 +238,7 @@ GC停顿时间缩短是以牺牲吞吐量和新生代空间换来的：系统把
 
 由于与吞吐量关系密切，Parallel Scavenge收集器也经常称为“吞吐量优先”收集器。除上述两个参数之外，Parallel Scavenge收集器还有一个参数-XX：+UseAdaptiveSizePolicy值得关注。这是一个开关参数，当这个参数打开之后，就不需要手工指定新生代的大小（-Xmn）、Eden与Survivor区的比例（-XX：SurvivorRatio）、晋升老年代对象年龄(-XX：PretenureSizeThreshold)等细节参数了，虚拟机会根据当前系统的运行情况收集性能监控信息，动态调整这些参数以提供最合适的停顿时间或者最大的吞吐量，这种调节方式称为GC自适应的调节策略（GC Ergonomics）。
 
-#### Serial Old收集器（GC日志标识：Tenured）
+#### Serial Old收集器（GC日志标识：Tenured，使用命令：-XX:+UseSerialOldGC）
 
 Serial Old是Serial收集器的老年代版本，它同样是一个单线程收集器，使用“标记-整理”算法。这个收集器的主要意义也是在于给Client模式下的虚拟机使用。如果在Server模式下，那么它主要还有两大用途：
 
@@ -247,7 +247,7 @@ Serial Old是Serial收集器的老年代版本，它同样是一个单线程收�
 
 ![image.png](https://gitee.com/cao_ziqiang/img/raw/master/20220310174129.webp)
 
-#### Parallel Old收集器（GC日志标识：ParOldGen）
+#### Parallel Old收集器（GC日志标识：ParOldGen，使用命令：-XX: +UseParallelOldGc）
 
 Parallel Old是Parallel Scavenge收集器的老年代版本，使用多线程和“标记-整理”算法。这个收集器是在JDK 1.6中才开始提供的，在此之前，新生代的Parallel Scavenge收集器一直处于比较尴尬的状态。原因是，如果新生代选择了Parallel Scavenge收集器，老年代除了Serial Old（PS MarkSweep）收集器外别无选择。
 
@@ -255,7 +255,7 @@ Parallel Old是Parallel Scavenge收集器的老年代版本，使用多线程和
 
 ![image.png](https://gitee.com/cao_ziqiang/img/raw/master/20220310174214.webp)
 
-#### CMS（Concurrent Mark Sweep）收集器
+#### CMS（Concurrent Mark Sweep，使用命令：-XX:+UseConcMarkSweepGC）收集器
 
 CMS（Concurrent Mark Sweep）收集器是一种以**获取最短回收停顿时间为目标**的收集器。目前很大一部分的Java应用集中在互联网站或者B/S系统的服务端上，这类应用尤其重视服务的响应速度，希望系统停顿时间最短，以给用户带来较好的体验。CMS收集器就非常符合这类应用的需求。
 
@@ -303,7 +303,7 @@ CMS是一款优秀的收集器，它的主要优点在名字上已经体现出�
 - **Parallel Old** 是 多线程、标记——整理算法、适合于吞吐量优先以及CPU资源敏感的场合可以和Parallel Scavenge搭配使用
 - **CMS** 是有最短停顿时间 低延迟的垃圾收集器，使用分代收集新生代采用复制算法、老年代采用标记-清除算法进行回收
 
-#### G1垃圾收集器
+#### G1垃圾收集器（使用命令：-Xx:+UseG1GC）
 
 G1(Garbage-First)收集器是当今收集器技术发展的最前沿成果之一。G1是一款面向服务端应用的垃圾收集器。HotSpot开发团队赋予它的使命是（在比较长期的）未来可以替换掉JDK 1.5中发布的CMS收集器。与其他GC收集器相比，G1具备如下特点。
 
@@ -353,6 +353,8 @@ Evacuation阶段可以自由选择任意多个region来独立收集构成收集�
 在选定CSet后，evacuation其实就跟ParallelScavenge的young GC的算法类似，采用并行copying（或者叫scavenging）算法把CSet里每个region里的活对象拷贝到新的region里，整个过程完全暂停。从这个意义上说，G1的evacuation跟传统的mark-compact算法的compaction完全不同：前者会自己从根集合遍历对象图来判定对象的生死，不需要依赖global concurrent marking的结果，有就用，没有拉倒；而后者则依赖于之前的mark阶段对对象生死的判定。
 
 纯G1模式下，CSet的选定完全靠统计模型找处收益最高、开销不超过用户指定的上限的若干region。由于每个region都有RSet覆盖，要单独evacuate任意一个或多个region都没问题。
+
+jdk11: Epsilon GC和 ZGC。
 
 ### 类加载的过程？
 
@@ -446,7 +448,27 @@ JDK6 :当调用intern方法时，如果字符串常量池先前已创建出该�
 
 JDK6+:当调用intern方法时,如果字符串常量池先前已创建出该字符串对象，则返回池中的该字符串的引用。否则，如果该字符串对象已经存在于Java堆中，则将堆中对此对象的引用添加到字符串常量池中，并且返回该引用;如果堆中不存在，则在池中创建该字符串并返回其引用。
 
+### 触发Full GC的条件？
 
+老年代空间不足；
 
+永久代空间不足；
 
+CMS GC时出现promotion failed , concurrent mode failure；
+
+Minor GC晋升到老年代的平均大小大于老年代的剩余空间；
+
+调用System.gc()，还是虚拟机来决定是否执行；
+
+使用RMI来进行RPC或管理的JDK应用，每小时执行1次Full GC；
+
+### Object的finalize方法的作用是否与C++的析构函数相同？
+
+与C++的析构函数不同，析构函数调用确定，而它的是不确定的；
+
+将未被引用的对象放置于F-Queue队列；
+
+方法执行随时可能会被终止；
+
+给予对象最后一次重生的机会；
 
