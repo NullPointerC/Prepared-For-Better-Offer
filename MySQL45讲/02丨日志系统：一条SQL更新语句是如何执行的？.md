@@ -10,7 +10,7 @@
 create table T(ID int primary key, c int)
 ```
 
-![image-20220205155708166](http://static.codenote.xyz20220205155708.png)
+![image-20220205155708166](http://static.codenote.xyz/20220205155708.png)
 
 前面提到了查询语句的流程如上所示，首先可以确定的是，更新语句的流程也和查询语句的流程一样。
 
@@ -42,7 +42,7 @@ update T set c = c + 1 where ID = 2;
 
 InnoDB的$redo\ log$大小是固定的，比如可以配置一组4个文件，每个文件的大小是1GB，那么整个日志的大小就是4GB。
 
-![image-20220205161345082](http://static.codenote.xyz20220205161345.png)
+![image-20220205161345082](http://static.codenote.xyz/20220205161345.png)
 
 如上所示，从头开始写，写到末尾又从头开始写。
 
@@ -77,7 +77,7 @@ $write\ pos$和$checkpoint$之间的空间是空着的部分，用来记录新�
 4. 执行器生产这个操作的$bin\ log$，并把$bin\ log$写入磁盘；
 5. 执行器调用引擎的提交事务接口，引擎把刚刚写入的$redo\ log$改成commit状态，表示事务已提交，更新完成。
 
-![image-20220205163703591](http://static.codenote.xyz20220205163703.png)
+![image-20220205163703591](http://static.codenote.xyz/20220205163703.png)
 
 上图中深色部分表示在执行器中执行，浅色部分表示在引擎中执行。
 

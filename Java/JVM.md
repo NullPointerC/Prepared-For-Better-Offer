@@ -1,6 +1,6 @@
 ### 什么时候会发生栈内存溢出？
 
-![image-20220310145028084](http://static.codenote.xyz20220310145028.png)
+![image-20220310145028084](http://static.codenote.xyz/20220310145028.png)
 
 栈是线程私有的，栈的生命周期是和线程一致的；
 
@@ -10,7 +10,7 @@
 
 ### JVM内存模型？
 
-![image-20220310145308510](http://static.codenote.xyz20220310145308.png)
+![image-20220310145308510](http://static.codenote.xyz/20220310145308.png)
 
 程序计数器：线程私有，一块很小的空间，用于指示当前线程的行号，当前虚拟机正在执行的线程指令地址；
 
@@ -36,13 +36,13 @@
 
 引用力弱与强引用，用在非必须对象的场景。在即将OOM之前，垃圾回收器会把这些引用指向的对象加入回收范围，以获得更多的内存空间，让程序能够继续健康运行。主要用来缓存服务器中间计算结果及不需要实时保存的用户行为等。软引用可以用来实现高速缓存。
 
-![image-20220313222401796](http://static.codenote.xyz20220313222401.png)
+![image-20220313222401796](http://static.codenote.xyz/20220313222401.png)
 
 #### 弱引用
 
 引用强度较前两者更弱，也是用来描述非必须对象的。如果弱引用指向的对象只存在弱引用这一条线路，则在下一次 Y GC （年轻代GC）时会被回收。由于YGC的时间不确定性，弱引用何时被回收也具有不确定性。并且被回收的概率也不大，因为GC线程优先级比较低弱引用。主要用于指向某个易消失的对象，在强引用断开后，此引用不会劫持对象，调用weakReference.get() 会返回空。适用于引用偶尔被使用且不影响垃圾收集的对象。
 
-![image-20220313222555380](http://static.codenote.xyz20220313222555.png)
+![image-20220313222555380](http://static.codenote.xyz/20220313222555.png)
 
 #### 虚引用
 
@@ -50,7 +50,7 @@
 
 虚引用与软引用和弱引用的一个区别在于，虚引用必须和引用队列（ReferenceQueue）联合使用。当垃圾回收器准备回收一个对象时，如果发现它还有虚引用，就会在回收对象的内存之前，把这个虚引用加入到与之关联的引用队列中。
 
-![image-20220313222643475](http://static.codenote.xyz20220313222643.png)
+![image-20220313222643475](http://static.codenote.xyz/20220313222643.png)
 
 
 
@@ -58,7 +58,7 @@
 
 JDK1.8中分为新生代和老年代：
 
-![image-20220310150056283](http://static.codenote.xyz20220310150056.png)
+![image-20220310150056283](http://static.codenote.xyz/20220310150056.png)
 
 新生代又分为Eden区和幸存者区，幸存者区又分为幸存者0区to和幸存者1区from。
 
@@ -92,7 +92,7 @@ Java中有四种垃圾回收算法，分别是标记清除法、标记整理法�
 
 如下图所示：
 
-![image.png](http://static.codenote.xyz20220310151321.webp)
+![image.png](http://static.codenote.xyz/20220310151321.webp)
 
 
 
@@ -104,13 +104,13 @@ Java中有四种垃圾回收算法，分别是标记清除法、标记整理法�
 
 缺点是仍然需要进行对象移动，一定程度上降低了效率。
 
-![image.png](http://static.codenote.xyz20220310151758.webp)
+![image.png](http://static.codenote.xyz/20220310151758.webp)
 
 #### 复制算法
 
 它将可用内存按容量划分为大小相等的两块，每次只使用其中的一块。当这一块的内存用完了，就将还存活着的对象复制到另外一块上面，然后再把已使用的内存空间一次清理掉，这样一来就不容易出现内存碎片的问题。
 
-![image.png](http://static.codenote.xyz20220310151924.webp)
+![image.png](http://static.codenote.xyz/20220310151924.webp)
 
 这样虽然解决了内存内存碎片问题，但是却对内存空间的使用做出了高昂的代价，因为能够使用的内存缩减到原来的一半，会浪费一半的内存空间。
 
@@ -121,11 +121,11 @@ Java中有四种垃圾回收算法，分别是标记清除法、标记整理法�
 - 在新生代中，每次垃圾收集时都发现有大批对象死去，只有少量存活，那就选用复制算法，只需要付出少量存活对象的复制成本就可以完成收集。
 - 老年代中因为对象存活率高、没有额外空间对它进行分配担保，就必须使用”标记—整理”算法来进行回收。
 
-![image.png](http://static.codenote.xyz20220310152457.webp)
+![image.png](http://static.codenote.xyz/20220310152457.webp)
 
 ### 分别说说这四种算法的特点以及在哪使用?
 
-![image.png](http://static.codenote.xyz20220310153703.webp)
+![image.png](http://static.codenote.xyz/20220310153703.webp)
 
 CMS垃圾回收器就是使用的标记清除算法。
 
@@ -147,7 +147,7 @@ Parallel Scavenge，使用并行的方式进行垃圾回收，也是新生代的
 
 可达性分析法：从GC Root往下搜索，如果从GC Root开始玩下搜索，对象到GC Root没有任何链连接GC Root上，判断为对象不可用；
 
-![image-20220310160606712](http://static.codenote.xyz20220310160606.png)
+![image-20220310160606712](http://static.codenote.xyz/20220310160606.png)
 
 Java中可以作为GC Root的有：
 
@@ -166,7 +166,7 @@ finalize()方法是对象逃脱死亡命运的最后一次机会，稍后GC将�
 
 譬如把自己(this关键字)赋值给某个类变量或者对象的成员变量，那么第二次标记时它将被移除“即回收”的集合；如果对象这时候还没有逃脱，那基本上它就真的被回收了。
 
-![img](http://static.codenote.xyz20220310172307.webp)
+![img](http://static.codenote.xyz/20220310172307.webp)
 
 ```java
 public class FinalizeEscapeGC {
@@ -212,11 +212,11 @@ public class FinalizeEscapeGC {
 
 ### 有哪几种垃圾回收器，有哪些优缺点? cms和g1的区别?
 
-![image.png](http://static.codenote.xyz20220310174739.webp)
+![image.png](http://static.codenote.xyz/20220310174739.webp)
 
 <hr/>
 
-![image-20220310180229464](http://static.codenote.xyz20220310180229.png)
+![image-20220310180229464](http://static.codenote.xyz/20220310180229.png)
 
 #### Serial收集器（GC日志标识：DefNew，使用命令：-XX:+UseSerialGC）
 
@@ -224,13 +224,13 @@ Serial收集器是最基本、发展历史最悠久的收集器，曾经（在JD
 
 Serial收集器简单而高效、没有线程交互的开销，专心做垃圾收集自然可以获得最高的单线程收集效率，对于运行在Client模式下的虚拟机来说是一个很好的选择。Serial收集器的工作过程如图所示：
 
-![image.png](http://static.codenote.xyz20220310173218.webp)
+![image.png](http://static.codenote.xyz/20220310173218.webp)
 
 #### ParNew收集器（GC日志标识：ParNew，使用命令：-XX:+UseParNewGC）
 
 ParNew收集器其实就是Serial收集器的多线程版本，**追求低停顿的时间**。除了使用多条线程进行垃圾收集之外，其余行为包括Serial收集器可用的所有控制参数、收集算法、Stop The World、对象分配规则、回收策略等都与Serial收集器完全一样，在实现上，这两种收集器也共用了相当多的代码。同时ParNew收集器也是CMS在年轻代的默认收集器，ParNew收集器的工作过程如图所示：
 
-![image.png](http://static.codenote.xyz20220310173347.webp)
+![image.png](http://static.codenote.xyz/20220310173347.webp)
 
 ParNew收集器除了多线程收集之外，其他与Serial收集器相比并没有太多创新之处，但它却是许多运行在Server模式下的虚拟机中首选的新生代收集器，其中有一个与性能无关但很重要的原因是，除了Serial收集器外，目前只有它能与CMS收集器配合工作。在JDK 1.5时期，HotSpot推出了一款在强交互应用中几乎可认为有划时代意义的垃圾收集器——CMS收集器（Concurrent Mark Sweep），这款收集器是HotSpot虚拟机中第一款真正意义上的并发（Concurrent）收集器，它第一次实现了让垃圾收集线程与用户线程（基本上）同时工作。
 
@@ -255,7 +255,7 @@ Serial Old是Serial收集器的老年代版本，它同样是一个单线程收�
 - 一种用途是在JDK 1.5以及之前的版本中与Parallel Scavenge 收集器搭配使用[1]，
 - 另一种用途就是作为CMS收集器的后备预案，在并发收集发生Concurrent Mode Failure时使用。Serial Old收集器的工作过程如图所示：
 
-![image.png](http://static.codenote.xyz20220310174129.webp)
+![image.png](http://static.codenote.xyz/20220310174129.webp)
 
 #### Parallel Old收集器（GC日志标识：ParOldGen，使用命令：-XX: +UseParallelOldGc）
 
@@ -263,7 +263,7 @@ Parallel Old是Parallel Scavenge收集器的老年代版本，使用多线程和
 
 直到Parallel Old收集器出现后，“吞吐量优先”收集器终于有了比较名副其实的应用组合，在注重吞吐量以及CPU资源敏感的场合，都可以优先考虑Parallel Scavenge加Parallel Old。Parallel Old收集器的工作过程如图所示：
 
-![image.png](http://static.codenote.xyz20220310174214.webp)
+![image.png](http://static.codenote.xyz/20220310174214.webp)
 
 #### CMS（Concurrent Mark Sweep，使用命令：-XX:+UseConcMarkSweepGC）收集器
 
@@ -288,9 +288,9 @@ CMS（Concurrent Mark Sweep）收集器是一种以**获取最短回收停顿时
 
 由于整个过程中耗时最长的并发标记和并发清除过程收集器线程都可以与用户线程一起工作，所以，从总体上来说，CMS收集器的内存回收过程是与用户线程一起并发执行的。
 
-**CMS收集器收集日志如下：** ![image.png](http://static.codenote.xyz20220310174236.webp) **CMS收集器工作过程如图所示：**
+**CMS收集器收集日志如下：** ![image.png](http://static.codenote.xyz/20220310174236.webp) **CMS收集器工作过程如图所示：**
 
-![image.png](http://static.codenote.xyz20220310174246.webp)
+![image.png](http://static.codenote.xyz/20220310174246.webp)
 
 6.2 CMS 的不足
 
@@ -327,7 +327,7 @@ G1(Garbage-First)收集器是当今收集器技术发展的最前沿成果之一
 
 在G1之前的其他收集器进行收集的范围都是整个新生代或者老年代，而G1不再是这样。使用G1收集器时，Java堆的内存布局就与其他收集器有很大差别，它将整个Java堆划分为多个大小相等的独立区域（Region），虽然还保留有新生代和老年代的概念，但新生代和老年代不再是物理隔离的了，它们都是一部分Region（不需要连续）（物理上不一定连续，在逻辑上连续）的集合。
 
-![image.png](http://static.codenote.xyz20220311223320.webp)
+![image.png](http://static.codenote.xyz/20220311223320.webp)
 
 在G1中，还有一种特殊的区域，叫Humongous区域。 如果一个对象占用的空间超过了分区容量50%以上，G1收集器就认为这是一个巨型对象。这些巨型对象，默认直接会被分配在年老代，但是如果它是一个短期存在的巨型对象，就会对垃圾收集器造成负面影响。为了解决这个问题，G1划分了一个Humongous区，它用来专门存放巨型对象。如果一个H区装不下一个巨型对象，那么G1会寻找连续的H分区来存储。为了能找到连续的H区，有时候不得不启动Full GC。
 
@@ -339,7 +339,7 @@ G1收集器之所以能建立可预测的停顿时间模型，是因为它可以
 
 在G1收集器中，也有和上面一样的CardTable。另外G1中每个Region还有一个与之对应的Remembered Set，虚拟机发现程序在对Reference类型的数据进行写操作时，会产生一个 Write Barrier暂时中断写操作，检查Reference引用的对象是否处于不同的Region之中，如果是，便通过CardTable把相关引用信息记录到被引用对象所属的Region的Remembered Set之中。当进行内存回收时，在GC根节点的枚举范围中加入Remembered Set即可保证不对全堆扫描也不会有遗漏。
 
-![image.png](http://static.codenote.xyz20220311223345.webp)
+![image.png](http://static.codenote.xyz/20220311223345.webp)
 
 Young GC大致可以分为5个阶段：
 
@@ -372,7 +372,7 @@ jdk11: Epsilon GC和 ZGC。
 
 过程如下：
 
-![image-20220311225903825](http://static.codenote.xyz20220311225903.png)
+![image-20220311225903825](http://static.codenote.xyz/20220311225903.png)
 
 加载：根据类的全限定类名，获取类的二进制流，将二进制流的静态存储文件即class文件转换为方法区的运行时的数据结构，在堆上为类生成一个class对象；
 
@@ -440,7 +440,7 @@ Java防止内存中出现多个相同的字节码，因为没有双亲委派，J
 
 联系∶引用对象、数组时，栈里定义变量保存堆中目标的首地址；
 
-![image-20220313205137451](http://static.codenote.xyz20220313205137.png)
+![image-20220313205137451](http://static.codenote.xyz/20220313205137.png)
 
 管理方式：栈自动释放，堆需要GC；
 

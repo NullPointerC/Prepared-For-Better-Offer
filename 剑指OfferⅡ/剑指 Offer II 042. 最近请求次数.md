@@ -1,6 +1,6 @@
 [剑指 Offer II 042. 最近请求次数](https://leetcode-cn.com/problems/H8086Q/)
 
-![image-20220318232853504](http://static.codenote.xyz20220318232853.png)
+![image-20220318232853504](http://static.codenote.xyz/20220318232853.png)
 
 由于t是单调递增的，所以我们可以依次将t存入数组中，然后二分地去找到t-3000的左边界，找到了根据目前的size相减即可。
 

@@ -4,7 +4,7 @@
 
 如下是一个带缓存系统架构图：
 
-![image-20220301211137742](http://static.codenote.xyz20220301211137.png)
+![image-20220301211137742](http://static.codenote.xyz/20220301211137.png)
 
 ### memcache和redis
 
@@ -39,13 +39,13 @@ FD：File Description，文件描述符；
 
 传统的阻塞`I/O`模型：
 
-![image-20220303190954152](http://static.codenote.xyz20220303190954.png)
+![image-20220303190954152](http://static.codenote.xyz/20220303190954.png)
 
 当应用程序使用`read`或`write`对某个文件描述符FD进行读写时，如果当前`FD`不可读或不可谢，那么应用程序就不会做出响应，也是在同步地阻塞等待数据被加载进用户态缓存。
 
 在`I/O`多路复用中，引入了`select`这个系统调用，能够同时监控多个文件描述符的可读、可写状态描述，当其中的某些文件描述符变为可读可写情况时，`select`系统调用就会返回可读、可写的FD个数。
 
-![image-20220303191242403](http://static.codenote.xyz20220303191242.png)
+![image-20220303191242403](http://static.codenote.xyz/20220303191242.png)
 
 在Linux中，还有其他的多路复用技术如`epoll`、`kqueue`、`evport`。
 
@@ -55,7 +55,7 @@ FD：File Description，文件描述符；
 
 以时间复杂度为`O(n)`的`select`作为保底；
 
-![img](http://static.codenote.xyz20220303194649.webp)
+![img](http://static.codenote.xyz/20220303194649.webp)
 
 多路复用 I/O 模型的做法是，用一个线程将这一万个建立成功的链接陆续的放入 `event_poll`，`event_poll` 会为这一万个长连接注册回调函数，当某一个长连接准备就绪后（建立连接成功、数据读取完成等），就会通过回调函数写入到 `event_poll` 的就绪队列 `rdlist` 中，这样这个单线程就可以通过读取 `rdlist` 获取到需要的数据。
 
@@ -73,7 +73,7 @@ SortSet：String元素组成的有序集合，通过分数来为集合中的成�
 
 此外，新版的redis中还引入了`HyperLogLog`，用于支持存储地理位置信息的`Geo`。
 
-![image-20220303200820874](http://static.codenote.xyz20220303200820.png)
+![image-20220303200820874](http://static.codenote.xyz/20220303200820.png)
 
 ### 从海量key中查询出某一固定前缀的key
 
@@ -93,7 +93,7 @@ SortSet：String元素组成的有序集合，通过分数来为集合中的成�
 
 `setnx`指令和`EXPIRE key`指令设置key的生存时间，当key过期时，会被自动删除；
 
-![image-20220303211831762](http://static.codenote.xyz20220303211831.png)
+![image-20220303211831762](http://static.codenote.xyz/20220303211831.png)
 
 但是原子性得不到保证；
 
@@ -103,7 +103,7 @@ SortSet：String元素组成的有序集合，通过分数来为集合中的成�
 
 `ex seconds` 表示设置建的过期时间为seconds，后者为毫秒；
 
-NX表示不存在创建，XX表示已经存在时创建；![image-20220303212725941](http://static.codenote.xyz20220303212726.png)
+NX表示不存在创建，XX表示已经存在时创建；![image-20220303212725941](http://static.codenote.xyz/20220303212726.png)
 
 ### 大量key同时过期
 
@@ -168,7 +168,7 @@ AOF缺点︰文件体积大，恢复时间长
 
 Redis 数据类型（也叫 Redis 对象）和底层数据结构的对应关图
 
-![img](http://static.codenote.xyz20220314233457.webp)
+![img](http://static.codenote.xyz/20220314233457.webp)
 
 在 Redis 3.0 版本中 List 对象的底层数据结构由「双向链表」或「压缩表列表」实现，但是在 3.2 版本之后，List 数据类型底层数据结构是由 quicklist 实现的；
 
