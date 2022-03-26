@@ -1,6 +1,6 @@
 ### RDBMS的架构
 
-![image-20220225154652997](http://static.codenote.xyz/20220225154653.png)
+![image-20220225154652997](http://static.codenote.xyz/img/20220225154653.png)
 
 ### 为什么要使用索引？
 
@@ -28,11 +28,11 @@ B-Tree，也称平衡多路查找树，如果每个节点最多有`m`个孩子�
 
 如下展示了3阶B树。
 
-![image-20220225160445034](http://static.codenote.xyz/20220225160445.png)
+![image-20220225160445034](http://static.codenote.xyz/img/20220225160445.png)
 
 通常情况下，`m`都会设置为非常大，降低树的高度。
 
-![image-20220225161504427](http://static.codenote.xyz/20220225161504.png)
+![image-20220225161504427](http://static.codenote.xyz/img/20220225161504.png)
 
 B+-Tree
 
@@ -46,7 +46,7 @@ B+树是B树的变种，其定义基本与B树相同，除了：
 
 所有叶子节点均有一个链指针指向下一个叶子结点，并按大小关系链接；
 
-![image-20220225162532434](http://static.codenote.xyz/20220225162532.png)
+![image-20220225162532434](http://static.codenote.xyz/img/20220225162532.png)
 
 所以说B+树所有的检索都是跟部开始，检索到叶子节点才可以停止，而非叶子节点不存储数据，可以存储更多的关键字，B+树相对于B树来说，更矮。
 
@@ -58,7 +58,7 @@ B+树的查询效率更加稳定，所有的查询都必须到叶子节点才停
 
 B+树更有利于对数据库的扫描，B+树需要遍历叶子节点，就可以减少对数据库的全表扫描；
 
-![image-20220227164626922](http://static.codenote.xyz/20220227164627.png)
+![image-20220227164626922](http://static.codenote.xyz/img/20220227164627.png)
 
 对于B树，无论是叶子节点还是非叶子节点，都要存储数据，这样会导致一页中的存储键值数减少，指针也会跟着减少，要同样保存大量数据，只能增加树的高度，导致性能降低。
 
@@ -66,7 +66,7 @@ hash索引
 
 有些存储引擎还支持hash表作为存储引擎，可以直接根据hash函数找到数据的块。
 
- ![image-20220225163631830](http://static.codenote.xyz/20220225163631.png)
+ ![image-20220225163631830](http://static.codenote.xyz/img/20220225163631.png)
 
 哈希索引查询效率高，但是仅仅满足"="或"in"，不能使用范围查询，因为查询的范围`(a,b)`经过哈希运算后并不能保证`a`和`b`的大小关系。
 
@@ -80,7 +80,7 @@ hash索引
 
 bitmap索引
 
-![image-20220225164142944](http://static.codenote.xyz/20220225164143.png)
+![image-20220225164142944](http://static.codenote.xyz/img/20220225164143.png)
 
 如果仅仅是为了统计一些字段，可以使用bitmap。但是需要注意MySQL并不支持bitmap，Oracle支持bitmap。
 
@@ -90,7 +90,7 @@ bitmap索引
 
 稀疏索引文件只为索引码的某些值建立索引项；
 
-![image-20220225164615093](http://static.codenote.xyz/20220225164615.png)
+![image-20220225164615093](http://static.codenote.xyz/img/20220225164615.png)
 
 对于InnoDB，若一个主键被定义，则该主键作为密集索引；
 
@@ -106,15 +106,15 @@ bitmap索引
 
 非聚集索引（二级索引）：将数据与索引分开存储，索引结构的叶子节点关联的是对应的主键，可以存在多个；
 
-![image-20220225183451863](http://static.codenote.xyz/20220225183518.png)
+![image-20220225183451863](http://static.codenote.xyz/img/20220225183518.png)
 
 <hr/>
 
- ![image-20220227170759167](http://static.codenote.xyz/20220227170759.png)
+ ![image-20220227170759167](http://static.codenote.xyz/img/20220227170759.png)
 
 <hr/>
 
-![image-20220225185826998](http://static.codenote.xyz/20220225185827.png)
+![image-20220225185826998](http://static.codenote.xyz/img/20220225185827.png)
 
 可以发现innodb的索引和数据是存储在同一个文件中的，而MyISAM的索引和数据是分别存放的。
 
@@ -142,7 +142,7 @@ show status like "%slow_queries%"
 
 慢SQL记录日志文件如下所示：
 
-![image-20220225191212581](http://static.codenote.xyz/20220225191212.png)
+![image-20220225191212581](http://static.codenote.xyz/img/20220225191212.png)
 
 使用explain等工具分析SQL；
 
@@ -150,11 +150,11 @@ explain用于描述MySQL如何执行查询操作。
 
 `id`表示SQL执行的顺序，`type`表示MySQL找到数据行的方式，性能好坏如下所示
 
-![image-20220225191450761](http://static.codenote.xyz/20220225191450.png)
+![image-20220225191450761](http://static.codenote.xyz/img/20220225191450.png)
 
 `extra`表示额外的信息，如果出现如下2项，意味着MySQL根本没有使用索引，效率会受到很大的影响。
 
-![image-20220225191630857](http://static.codenote.xyz/20220225191630.png)
+![image-20220225191630857](http://static.codenote.xyz/img/20220225191630.png)
 
 修改SQL或者尽量让SQL走索引；
 
@@ -216,7 +216,7 @@ INNODB适合数据增删改查都是否频繁的场景，适合可靠性要求�
 
 **InnoDB支持外键,MyISAM不支持外键。**
 
-InnoDB引擎如下所示：包含关系从大到小依次是表空间->段->区->页->行![image-20220227145534969](http://static.codenote.xyz/20220227145535.png)
+InnoDB引擎如下所示：包含关系从大到小依次是表空间->段->区->页->行![image-20220227145534969](http://static.codenote.xyz/img/20220227145535.png)
 
 在InnoDB中，一般表都只存放在一个文件`xxx.ibd`中，其中包括了表结构、索引和数据，可以使用`bin`目录下的`ibd2sdi`工具查看表结构；
 
@@ -230,7 +230,7 @@ memory引擎的表数据是存储在内存中的，由于受到硬件问题或�
 
 文件是：`xxx.sdi`文件，只存储表结构信息；
 
-![image-20220227150342850](http://static.codenote.xyz/20220227150342.png)
+![image-20220227150342850](http://static.codenote.xyz/img/20220227150342.png)
 
 ### 数据库事务的四大特性？
 
@@ -250,7 +250,7 @@ ACID是指事务的4个特性。
 
 更新丢失：一个事务的更新覆盖了另一个事务的更新。（原因是因为当前事务没有读取到其他提交的事务，但是数据库的所有级别都可以防止这样的情况发送）
 
-处理方式：mysql所有事务隔离级别在数据库层面上均可避免。![image-20220225210757446](http://static.codenote.xyz/20220225210757.png)
+处理方式：mysql所有事务隔离级别在数据库层面上均可避免。![image-20220225210757446](http://static.codenote.xyz/img/20220225210757.png)
 
 脏读：`READ-COMMITED`事务隔离级别以上可避免，指一个事务读取到了其他未提交的事务，也就是脏数据。
 
@@ -262,7 +262,7 @@ ACID是指事务的4个特性。
 
 幻读：`SERIALIZABLE`事务隔离级别可避免，指的是事务A读取若干行，事务B以插入或删除的方式来修改事务A的结果集，导致事务A看起来像出现幻觉一样。
 
-![image-20220226145923989](http://static.codenote.xyz/20220226145924.png)
+![image-20220226145923989](http://static.codenote.xyz/img/20220226145924.png)
 
 ### InnoDB可重复读隔离级别下如何避免幻读？
 
@@ -286,7 +286,7 @@ gap锁会用在非唯一索引或者不走索引的当前读中。
 
 undo日志，存储老版日志；
 
-![image-20220226152634475](http://static.codenote.xyz/20220226152634.png)
+![image-20220226152634475](http://static.codenote.xyz/img/20220226152634.png)
 
 read view；
 

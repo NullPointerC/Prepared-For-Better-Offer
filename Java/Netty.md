@@ -4,23 +4,23 @@ BIO是同步阻塞lO，NIO是同步非阻塞lO，AIO异步非阻塞lO；
 
 BIO：
 
-![image-20220311232951248](http://static.codenote.xyz/20220311232951.png)
+![image-20220311232951248](http://static.codenote.xyz/img/20220311232951.png)
 
 
 
 NIO：
 
-![image-20220312133301603](http://static.codenote.xyz/20220312133301.png)
+![image-20220312133301603](http://static.codenote.xyz/img/20220312133301.png)
 
 多路复用：
 
-![image-20220312133452993](http://static.codenote.xyz/20220312133453.png)
+![image-20220312133452993](http://static.codenote.xyz/img/20220312133453.png)
 
 把轮询的操作转移到系统调用上。
 
 AIO：
 
-![image-20220312133658570](http://static.codenote.xyz/20220312133658.png)
+![image-20220312133658570](http://static.codenote.xyz/img/20220312133658.png)
 
 linux只支持文件的aio，不支持网络的aio，所以aio没有nio那么流行；
 
@@ -50,7 +50,7 @@ Netty是由JBOSS提供的一个Java开源框架。高性能异步事件驱动的
 
 NIO开发的基本流程如下所示：
 
-![image-20220312135632694](http://static.codenote.xyz/20220312135632.png)
+![image-20220312135632694](http://static.codenote.xyz/img/20220312135632.png)
 
 ### Netty组件有哪些?
 
@@ -66,7 +66,7 @@ ServerBootstrap和 Bootstrap；
 
 EventLoopGroup和 NioEventLoopGroup；
 
-![image-20220312140538122](http://static.codenote.xyz/20220312140538.png)
+![image-20220312140538122](http://static.codenote.xyz/img/20220312140538.png)
 
 ### Netty如何做到高性能?Netty的线程模型是怎么样的?
 
