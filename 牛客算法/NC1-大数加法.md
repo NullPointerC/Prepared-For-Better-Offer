@@ -1,6 +1,6 @@
 [**NC1** **大数加法**](https://www.nowcoder.com/practice/11ae12e8c6fe48f883cad618c2e81475?tpId=196&tqId=37176&rp=1&ru=/exam/oj&qru=/exam/oj&sourceUrl=%2Fexam%2Foj%3Ftab%3D%25E7%25AE%2597%25E6%25B3%2595%25E7%25AF%2587%26topicId%3D196%26page%3D1&difficulty=undefined&judgeStatus=undefined&tags=&title=)
 
-![image-20220216000515283](https://gitee.com/cao_ziqiang/img/raw/master/20220216000515.png)
+![image-20220216000515283](http://static.codenote.xyz20220216000515.png)
 
 思路其实就是先把字符串反转过来，让低位在前，高位在后，因为加法是从地位开始模拟的，所以我们也需要从地位开始模拟，这里就可以先把字符串反转过来，再从低位开始累计，并且，由于10以内的加法可能产生进位，所以使用一个变量`carry`来保留进位，每一步的和也就是`s[i]+t[i]+carry`，之后把这个和的个位存进当前的结果中，继续保留进位，直到枚举完全`s`和`t`。
 
